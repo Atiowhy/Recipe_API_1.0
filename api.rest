@@ -1,0 +1,6 @@
+@url = http://localhost
+@port = 4000
+###
+GET {{url}}:{{port}}/user
+###
+
