@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.get('/category', getData);
 
-module.exports = router
+module.exports = router;

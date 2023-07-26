@@ -6,6 +6,7 @@ const {
   postRecipe,
   putRecipe,
   deleteRecipe,
+  GetRecipeByUsesr,
 } = require('../model/ModelRecipe');
 
 const RecipeController = {
@@ -35,14 +36,12 @@ const RecipeController = {
     console.log('total data');
     console.log(dataRecipeCount.rows[0].count);
     if (dataRecipe) {
-      res
-        .status(200)
-        .json({
-          status: 200,
-          message: 'get data recipe success',
-          data: dataRecipe.rows,
-          pagination,
-        });
+      res.status(200).json({
+        status: 200,
+        message: 'get data recipe success',
+        data: dataRecipe.rows,
+        pagination,
+      });
     }
   },
 
@@ -83,10 +82,39 @@ const RecipeController = {
       data: dataRecipeId.rows[0],
     });
   },
+
+  getUsersRecipe: async (req, res, next) => {
+    const { users_id } = req.params;
+    try {
+      if (!users_id) {
+        return res.status(404).json({ status: 404, message: 'ID NOT FOUND!' });
+      }
+      let dataRecipeUsers = await GetRecipeByUsesr(users_id);
+      console.log('data: ');
+      console.log(dataRecipeUsers);
+
+      if (!dataRecipeUsers.rows[0]) {
+        return res
+          .status(404)
+          .json({ status: 404, message: 'DATA RECIPE NOT FOUND!' });
+      }
+      return res
+        .status(200)
+        .json({
+          status: 200,
+          message: 'GET DATA RECIPE SUCCESS!',
+          data: dataRecipeUsers.rows,
+        });
+    } catch (error) {}
+  },
   postData: async (req, res, next) => {
     const { title, ingridients, category_id } = req.body; //inisialisasi data
     console.log('pos data'); //tampilkan data
     console.log(title, ingridients, category_id); //tampilkan data
+
+    let users_id = req.payload.id;
+    console.log('payload');
+    console.log(req.payload);
 
     if (!title || !ingridients || !category_id) {
       return res
@@ -97,6 +125,7 @@ const RecipeController = {
       title: title,
       ingridients: ingridients,
       category_id: parseInt(category_id),
+      users_id,
     }; //untuk memasukkan ke database
     console.log('data: ');
     console.log(data);
@@ -114,6 +143,13 @@ const RecipeController = {
       return res.status(404).json({ message: 'id wrong!' });
     }
     let dataRecipeId = await getRecipeById(parseInt(id));
+    let users_id = req.payload.id;
+    if (users_id !== dataRecipeId.rows[0].users_id) {
+      return res
+        .status(404)
+        .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
+    }
+
     console.log('put data');
     console.log(dataRecipeId.rows[0]);
 
@@ -137,6 +173,14 @@ const RecipeController = {
       if (!id || id <= 0 || isNaN(id)) {
         return res.status(404).json({ message: 'id wrong' });
       }
+      let dataRecipeId = await getRecipeById(parseInt(id));
+      let users_id = req.payload.id;
+      if (users_id !== dataRecipeId.rows[0].users_id) {
+        return res
+          .status(404)
+          .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
+      }
+
       let result = await deleteRecipe(parseInt(id));
       console.log(result);
       if (result.rowCount == 0) {

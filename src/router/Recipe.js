@@ -5,19 +5,22 @@ const {
   postData,
   putData,
   deleteData,
+  getUsersRecipe
 } = require('../controller/RecipeControler');
+const Protect = require('../middleware/Protect')
 
 const express = require('express');
 
 const router = express.Router();
 
 //recipe
-router.get('/recipe', getData);
-router.get('/recipe/detail',getDataDetail)
+router.get('/recipe', Protect, getData);
+router.get('/recipe/detail', getDataDetail);
 router.get('/recipe/:id', getDataById);
-router.post('/recipe', postData);
-router.put('/recipe/:id', putData);
-router.delete('/recipe/:id', deleteData);
+router.get('/data/:users_id',getUsersRecipe)
+router.post('/recipe', Protect, postData);
+router.put('/recipe/:id', Protect, putData);
+router.delete('/recipe/:id', Protect, deleteData);
 
 //user
 

@@ -4,15 +4,18 @@ const {
   postDataUser,
   deleteDataUser,
   updateUser,
+  login,
+  
 } = require('../controller/userController');
 const express = require('express');
 
 const router = express.Router();
 
 //user
+router.post('/login',login)
 router.get('/user', getUserData);
 router.get('/user/:id', getUserId);
-router.post('/user', postDataUser);
+router.post('/regis', postDataUser);
 router.delete('/user/:id', deleteDataUser);
 router.put('/user/:id', updateUser);
 // router.get('/user/:id', getDataById)

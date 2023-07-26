@@ -7,294 +7,389 @@
 	},
 	"item": [
 		{
-			"name": "GET data recipe by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/recipe/1",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"recipe",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET data recipe",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/recipe",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"recipe"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET data detailed",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/recipe/detail?search=soto",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"recipe",
-						"detail"
-					],
-					"query": [
-						{
-							"key": "search",
-							"value": "soto"
+			"name": "RECIPE",
+			"item": [
+				{
+					"name": "GET data recipe by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/recipe/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe",
+								"1"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST data recipe",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "title",
-							"value": "sate",
-							"type": "text"
-						},
-						{
-							"key": "ingridients",
-							"value": "ayam, kecap",
-							"type": "text"
-						},
-						{
-							"key": "category",
-							"value": "main course",
-							"type": "text"
-						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:4000/",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "PUT data recipe",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "title",
-							"value": "telur goreng",
-							"type": "text"
-						},
-						{
-							"key": "ingridients",
-							"value": "minyak goreng",
-							"type": "text"
-						},
-						{
-							"key": "category",
-							"value": "main course",
-							"type": "text"
+				{
+					"name": "GET data recipe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/recipe",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe"
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:4000/1?title",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"1"
-					],
-					"query": [
-						{
-							"key": "title",
-							"value": null
+				{
+					"name": "GET data detailed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/recipe/detail?search=soto",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "soto"
+								}
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "DELETE data recipe",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/9",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"9"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET data user",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/user",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"user"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET data user by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/user/2",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"user",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Post Register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "nama",
-							"value": "Maria Natalia",
-							"type": "text"
-						},
-						{
-							"key": "usia",
-							"value": "20",
-							"type": "text"
-						},
-						{
-							"key": "alamat",
-							"value": "Jakarta Utara",
-							"type": "text"
-						},
-						{
-							"key": "email",
-							"value": "natalia@gmail.com",
-							"type": "text"
-						}
-					]
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:4000/user",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"user"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "UPDATE user",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "nama",
-							"value": "Natalia",
-							"type": "text"
+				{
+					"name": "GET Data Recipe By Users ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/data/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"data",
+								"1"
+							]
 						}
-					]
-				},
-				"url": {
-					"raw": "localhost:4000/user/3",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"user",
-						"3"
-					]
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "DELETE data users",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "localhost:4000/user/3",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"user",
-						"3"
-					]
+			"name": "USERS",
+			"item": [
+				{
+					"name": "GET data user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/user",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET data user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/user/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nama",
+									"value": "Natalia",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:4000/user/3",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE data users",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/user/3",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "AUTH USERS",
+			"item": [
+				{
+					"name": "Post Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nama",
+									"value": "Sheilo",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "sheilo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "sheilo23",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:4000/regis",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"regis"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST LOGIN USERS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:4000/login",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MENU PROTECT",
+			"item": [
+				{
+					"name": "PUT data recipe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibmFtYSI6IlNoZWlsbyIsImVtYWlsIjoic2hlaWxvQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTMscD00JHp3YlVuUmVYOVVjbUozeGNnUHo2K2ckaG4ybGRSUEtZdHJYQXJHWG85aFB5MTdaWkNyeS9Ed1kvb0NpejNod3JVayIsInBob3RvIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0yNVQxNzowOTo0NS45MzlaIiwiaWF0IjoxNjkwMzAxNDI5fQ.MlvDAsNqoWTKRZPMlcbbYXSRYQ06AUgKJtyxm33UBP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "nasi goreng mantab",
+									"type": "text"
+								},
+								{
+									"key": "ingridients",
+									"value": "minyak goreng",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "main course",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:4000/recipe/8",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE data recipe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibmFtYSI6IlNoZWlsbyIsImVtYWlsIjoic2hlaWxvQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTMscD00JHp3YlVuUmVYOVVjbUozeGNnUHo2K2ckaG4ybGRSUEtZdHJYQXJHWG85aFB5MTdaWkNyeS9Ed1kvb0NpejNod3JVayIsInBob3RvIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0yNVQxNzowOTo0NS45MzlaIiwiaWF0IjoxNjkwMzAxNDI5fQ.MlvDAsNqoWTKRZPMlcbbYXSRYQ06AUgKJtyxm33UBP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:4000/recipe/7",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST data recipe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibmFtYSI6IlNoZWlsbyIsImVtYWlsIjoic2hlaWxvQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTMscD00JHp3YlVuUmVYOVVjbUozeGNnUHo2K2ckaG4ybGRSUEtZdHJYQXJHWG85aFB5MTdaWkNyeS9Ed1kvb0NpejNod3JVayIsInBob3RvIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAyMy0wNy0yNVQxNzowOTo0NS45MzlaIiwiaWF0IjoxNjkwMzAxNDI5fQ.MlvDAsNqoWTKRZPMlcbbYXSRYQ06AUgKJtyxm33UBP4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Nasi Goreng Maknyus",
+									"type": "text"
+								},
+								{
+									"key": "ingridients",
+									"value": "nasi, telur, bawang putih & bawang merah, lada, sawi, ayam, mentega",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:4000/recipe",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"recipe"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
