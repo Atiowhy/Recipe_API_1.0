@@ -5,7 +5,7 @@ const getRecipeAll = async () => {
   console.log('this is model');
   return new Promise((resolve, reject) =>
     Pool.query(
-      `SELECT recipe.id, recipe.title, recipe.ingridients, recipe.image, recipe.users_id, category.name AS category FROM recipe JOIN category ON recipe.category_id = category.id`,
+      `SELECT recipe.id, recipe.title, recipe.ingridients, recipe.photo, recipe.users_id, category.name AS category FROM recipe JOIN category ON recipe.category_id = category.id`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -40,7 +40,7 @@ const getRecipe = async (data) => {
   console.log('model getRecipe', search, searchBy, offset, limit);
   return new Promise((resolve, reject) =>
     Pool.query(
-      `SELECT recipe.id, recipe.title, recipe.ingridients, recipe.image, category.name AS category FROM recipe JOIN category ON recipe.category_id = category.id WHERE ${searchBy} ILIKE '%${search}%' OFFSET ${offset} LIMIT ${limit}`,
+      `SELECT recipe.id, recipe.title, recipe.ingridients, recipe.photo, category.name AS category FROM recipe JOIN category ON recipe.category_id = category.id WHERE ${searchBy} ILIKE '%${search}%' OFFSET ${offset} LIMIT ${limit}`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -80,11 +80,11 @@ const GetRecipeByUsesr = async (users_id) =>{
 
 //post recipe
 const postRecipe = async (data) => {
-  const { title, ingridients, category_id, users_id } = data;
+  const { title, ingridients, category_id, users_id, photo } = data;
   console.log(data);
   return new Promise((resolve, reject) => {
     Pool.query(
-      `INSERT INTO recipe(title,ingridients,category_id,image,users_id) VALUES('${title}', '${ingridients}', ${category_id}, 'https://placehold.co/600x400',${users_id})`,
+      `INSERT INTO recipe(title,ingridients,category_id,photo,users_id) VALUES('${title}', '${ingridients}', ${category_id}, '${photo}',${users_id})`,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -98,10 +98,10 @@ const postRecipe = async (data) => {
 
 //update recipe
 const putRecipe = async (data, id) => {
-  const { title, ingridients, category_id } = data;
+  const { title, ingridients, category_id, photo } = data;
   return new Promise((resolve, reject) => {
     Pool.query(
-      `UPDATE recipe SET title='${title}', ingridients='${ingridients}', category_id=${category_id} WHERE id=${id}`,
+      `UPDATE recipe SET title='${title}', ingridients='${ingridients}', category_id=${category_id}, photo='${photo}' WHERE id=${id}`,
       (err, result) => {
         if (!err) {
           resolve(result);

@@ -9,6 +9,7 @@ const {
   GetRecipeByUsesr,
 } = require('../model/ModelRecipe');
 
+const cloudinary = require('../config/photo');
 const RecipeController = {
   getDataDetail: async (req, res, next) => {
     const { search, searchBy, limit } = req.query;
@@ -98,41 +99,60 @@ const RecipeController = {
           .status(404)
           .json({ status: 404, message: 'DATA RECIPE NOT FOUND!' });
       }
-      return res
-        .status(200)
-        .json({
-          status: 200,
-          message: 'GET DATA RECIPE SUCCESS!',
-          data: dataRecipeUsers.rows,
-        });
-    } catch (error) {}
+      return res.status(200).json({
+        status: 200,
+        message: 'GET DATA RECIPE SUCCESS!',
+        data: dataRecipeUsers.rows,
+      });
+    } catch (error) {
+      return res.status(404).json({ message: error.message });
+    }
   },
   postData: async (req, res, next) => {
-    const { title, ingridients, category_id } = req.body; //inisialisasi data
-    console.log('pos data'); //tampilkan data
-    console.log(title, ingridients, category_id); //tampilkan data
+    // try {
+      const { title, ingridients, category_id, photo } = req.body; //inisialisasi data
+      console.log('post file');
+      console.log(req.file);
+      console.log('pos data'); //tampilkan data
+      console.log(title, ingridients, category_id, photo); //tampilkan data
 
-    let users_id = req.payload.id;
-    console.log('payload');
-    console.log(req.payload);
+      if(!req.isFileValid){
+        return res.status(404).json({message: req.isFileValidMessage})
+      }
 
-    if (!title || !ingridients || !category_id) {
-      return res
-        .status(404)
-        .json({ message: 'input title, ingridients, category required !' });
-    } //validation
-    let data = {
-      title: title,
-      ingridients: ingridients,
-      category_id: parseInt(category_id),
-      users_id,
-    }; //untuk memasukkan ke database
-    console.log('data: ');
-    console.log(data);
-    let result = postRecipe(data); //result dipanggil dari model
-    console.log(result);
+      const ImageCloud = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'recipe',
+      });
+      if (!ImageCloud) {
+        return res.status(404).json({ message: 'Upload Photo Failed' });
+      }
+      console.log(ImageCloud);
 
-    return res.status(200).json({ message: 'post data success', data }); //tampilkan status berhasil jika data masuk
+      let users_id = req.payload.id;
+      console.log('payload');
+      console.log(req.payload);
+
+      if (!title || !ingridients || !category_id) {
+        return res
+          .status(404)
+          .json({ message: 'input title, ingridients, category required !' });
+      } //validation
+      let data = {
+        title: title,
+        ingridients: ingridients,
+        category_id: parseInt(category_id),
+        users_id,
+        photo: ImageCloud.secure_url,
+      }; //untuk memasukkan ke database
+      console.log('data: ');
+      console.log(data);
+      let result = postRecipe(data); //result dipanggil dari model
+      console.log(result);
+
+      return res.status(200).json({ message: 'post data success', data }); //tampilkan status berhasil jika data masuk
+    // } catch (err) {
+    //   console.error(err.message);
+    // }
   },
 
   putData: async (req, res, next) => {
@@ -142,29 +162,67 @@ const RecipeController = {
     if (!id || id <= 0 || isNaN(id)) {
       return res.status(404).json({ message: 'id wrong!' });
     }
+
     let dataRecipeId = await getRecipeById(parseInt(id));
     let users_id = req.payload.id;
-    if (users_id !== dataRecipeId.rows[0].users_id) {
+
+    //photo cheker
+    if (!req.file) {
+      if (users_id !== dataRecipeId.rows[0].users_id) {
+        return res
+          .status(404)
+          .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
+      }
+
+      console.log('put data');
+      console.log(dataRecipeId.rows[0]);
+
+      let data = {
+        title: title || dataRecipeId.rows[0].title,
+        ingridients: ingridients || dataRecipeId.rows[0].ingridients,
+        category_id: category_id || dataRecipeId.rows[0].category_id,
+        photo: dataRecipeId.rows[0].photo,
+      };
+
+      let result = putRecipe(data, id);
+      console.log(result);
       return res
-        .status(404)
-        .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
+        .status(200)
+        .json({ status: 200, message: 'update data recipe success!', data });
+    } else {
+      if(!req.isFileValid){
+        return res.status(404).json({message: req.isFileValidMessage})
+      }
+      const ImageCloud = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'recipe',
+      });
+      if (!ImageCloud) {
+        return res.status(404).json({ message: 'Upload Photo Failed' });
+      }
+      console.log(ImageCloud);
+
+      if (users_id !== dataRecipeId.rows[0].users_id) {
+        return res
+          .status(404)
+          .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
+      }
+
+      console.log('put data');
+      console.log(dataRecipeId.rows[0]);
+
+      let data = {
+        title: title || dataRecipeId.rows[0].title,
+        ingridients: ingridients || dataRecipeId.rows[0].ingridients,
+        category_id: category_id || dataRecipeId.rows[0].category_id,
+        photo: ImageCloud.secure_url
+      };
+
+      let result = putRecipe(data, id);
+      console.log(result);
+      return res
+        .status(200)
+        .json({ status: 200, message: 'update data recipe success!', data });
     }
-
-    console.log('put data');
-    console.log(dataRecipeId.rows[0]);
-
-    let data = {
-      title: title || dataRecipeId.rows[0].title,
-      ingridients: ingridients || dataRecipeId.rows[0].ingridients,
-      category_id: category_id || dataRecipeId.rows[0].category_id,
-    };
-
-    let result = putRecipe(data, id);
-    console.log(result);
-
-    return res
-      .status(200)
-      .json({ status: 200, message: 'update data recipe success!', data });
   },
 
   deleteData: async (req, res, next) => {
