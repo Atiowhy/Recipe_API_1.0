@@ -8,14 +8,15 @@ const {
   
 } = require('../controller/userController');
 const express = require('express');
-
+const Upload = require('../middleware/Upload');
+const upload = require('../middleware/Upload');
 const router = express.Router();
 
 //user
-router.post('/login',login)
+// router.post('/login',login)
 router.get('/user', getUserData);
 router.get('/user/:id', getUserId);
-router.post('/regis', postDataUser);
+// router.post('/regis', postDataUser);
 router.delete('/user/:id', deleteDataUser);
 router.put('/user/:id', updateUser);
 // router.get('/user/:id', getDataById)

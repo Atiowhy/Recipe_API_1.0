@@ -1,96 +1,49 @@
 const Pool = require('../config/db');
 
-//get data
-const getUser = async () => {
-  return new Promise((resolve, reject) => {
-    Pool.query(`SELECT * FROM users`, (err, result) => {
-      if (!err) {
+const getAllUsers = async () => {
+  return new Promise((resolve, reject) =>
+    Pool.query(`SELECT * FROM users ORDER BY id DESC`, (error, result) => {
+      if (!error) {
         resolve(result);
       } else {
-        reject(err);
+        reject(error);
       }
-    });
-  });
+    })
+  );
 };
 
-//get data by id
 const getUserById = async (id) => {
   return new Promise((resolve, reject) => {
-    Pool.query(`SELECT * FROM users WHERE id=${id}`, (err, result) => {
-      if (!err) {
+    Pool.query(`SELECT * FROM users WHERE id=${id}`, (error, result) => {
+      if (!error) {
         resolve(result);
       } else {
-        reject(err);
+        reject(error.message);
       }
     });
   });
 };
 
-//register
-const postUser = async (data) => {
-  const { nama, email, password } = data;
-  return new Promise((resolve, reject) => {
-    Pool.query(
-      `INSERT INTO users(nama,email,password) VALUES('${nama}','${email}','${password}')`,
-      (err, result) => {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(err);
-        }
-      }
-    );
-  });
-};
-
-//delete user
-const deleteUser = async (id) => {
-  return new Promise((resolve, reject) => {
-    Pool.query(`DELETE FROM users WHERE id=${id}`, (err, result) => {
-      if (!err) {
-        resolve(result);
-      } else {
-        reject(err);
-      }
-    });
-  });
-};
-
-//update user
+// Edit user
 const putUser = async (data, id) => {
-  const { nama, email, password } = data;
+  const { name, email, password } = data;
   return new Promise((resolve, reject) => {
     Pool.query(
-      `UPDATE users SET nama='${nama}',email='${email}', password='${password}' WHERE id=${id}`,
-      (err, result) => {
-        if (!err) {
+      `UPDATE users SET name='${name}', email='${email}', password='${password}' WHERE id=${id}`,
+      (error, result) => {
+        if (!error) {
+          // console.log("result model", result);
           resolve(result);
         } else {
-          reject(err);
+          reject(error.message);
         }
       }
     );
-  });
-};
-
-//login user
-loginUser = async (email) => {
-  return new Promise((resolve, reject) => {
-    Pool.query(`SELECT * FROM users WHERE email='${email}'`, (err, result) => {
-      if (!err) {
-        resolve(result);
-      } else {
-        reject(err);
-      }
-    });
   });
 };
 
 module.exports = {
-  getUser,
+  getAllUsers,
   getUserById,
-  postUser,
-  deleteUser,
   putUser,
-  loginUser,
 };

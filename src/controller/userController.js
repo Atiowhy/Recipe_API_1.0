@@ -7,7 +7,7 @@ const {
   loginUser,
 } = require('../model/userModel');
 const argon2 = require('argon2');
-const GenerateToken = require('../helpers/GenerateToken')
+const GenerateToken = require('../helpers/GenerateToken');
 
 const userController = {
   getUserData: async (req, res, next) => {
@@ -59,62 +59,45 @@ const userController = {
   },
 
   postDataUser: async (req, res, next) => {
-    try {
-      let { email, password, nama } = req.body;
+    const { nama, email, password } = req.body;
 
-      if (!email || !password || !nama) {
-        return res.status(404).json({
-          status: 404,
-          message: 'FORM NAME, EMAIL, PASSWORD IS REQUIRED!',
-        });
-      }
-
-      let user = await loginUser(email);
-
-      if (user.rows[0]) {
-        return res.status(404).json({
-          status: 404,
-          message: 'YOUR EMAIL HAS REGISTERED, PLEASE LOGIN!',
-        });
-      }
-
-      password = await argon2.hash(password);
-
-      let dataUser = {
-        email,
-        nama,
-        password,
-      };
-
-      let data = await postUser(dataUser);
-      console.log(data);
-
-      if (!data.rowCount == 1) {
-        return res
-          .status(404)
-          .json({ status: 404, message: 'REGISTER FAILED' });
-      }
-
-      return res
-        .status(200)
-        .json({ status: 200, message: 'REGISTER SUCCESS, LOGIN NOW!', data:data.rows });
-      // let data = {
-      //   nama: nama,
-      //   email: email,
-      //   password: password
-      // };
-      // console.log(data);
-
-      // const dataPost = postUser(data);
-      // console.log(dataPost);
-      // return res
-      //   .status(200)
-      //   .json({ status: 200, message: 'POST DATA USER SUCCESS', data });
-    } catch (error) {
-      return res
-        .status(404)
-        .json({ status: 404, message: 'REGISTER FAILED', error });
+    if (!nama || !email || !password) {
+      return res.status(404).json({
+        status: 404,
+        message: 'email, password dan username harus diisi dengan benar',
+      });
     }
+    console.log(nama);
+    console.log(email);
+    console.log(password);
+
+    const user = await loginUser(email);
+
+    if (user.rows[0]) {
+      return res.status(404).json({
+        status: 404,
+        message: 'email sudah terdaftar, silahkan login',
+      });
+    }
+
+    const hashPassword = await argon2.hash(password);
+
+    const dataUser = {
+      email,
+      nama,
+      password: hashPassword,
+    };
+
+    const data = await postUser(dataUser);
+    console.log(data);
+
+    if (!data.rowCount == 1) {
+      return res.status(404).json({ status: 404, message: 'register gagal' });
+    }
+
+    return res
+      .status(200)
+      .json({ status: 200, message: 'register user berhasil' });
   },
 
   deleteDataUser: async (req, res, next) => {
@@ -167,12 +150,14 @@ const userController = {
   },
 
   login: async (req, res, next) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
     console.log(email, password);
+
     if (!email || !password) {
-      return res
-        .status(404)
-        .json({ status: 404, message: 'form email or password is required' });
+      return res.status(404).json({
+        status: 404,
+        message: 'email atau password harus diisi dengan benar',
+      });
     }
 
     let data = await loginUser(email, password);
@@ -181,26 +166,21 @@ const userController = {
     if (!data.rows[0]) {
       return res
         .status(404)
-        .json({ status: 404, message: 'YOUR EMAIL HAS NOT REGISTERED!' });
+        .json({ status: 404, message: 'email belum terdaftar' });
     }
 
     let users = data.rows[0];
-    console.log('Pass: ');
+    console.log('users.password');
     console.log(users.password);
     let verify = await argon2.verify(users.password, password);
-
     if (!verify) {
-      return res
-        .status(404)
-        .json({ status: 404, message: 'YOUR PASSWORD IS WRONG!' });
+      return res.status(404).json({ status: 404, message: 'password salah' });
     }
+    delete users.password;
+    let token = GenerateToken(users);
+    users.token = token;
 
-    let token = GenerateToken(users)
-    users.token = token
-
-    res
-      .status(200)
-      .json({ status: 200, message: 'LOGIN SUCCESS!', data: data.rows });
+    res.status(200).json({ status: 200, message: 'Login Success', users });
   },
 };
 

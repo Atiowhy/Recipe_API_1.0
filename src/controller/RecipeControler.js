@@ -1,12 +1,15 @@
 const {
   getRecipe,
-  getRecipeAll,
   getRecipeCount,
   getRecipeById,
   postRecipe,
   putRecipe,
-  deleteRecipe,
-  GetRecipeByUsesr,
+  deleteRecipeById,
+  GetRecipeByUsers,
+  getDataSearch,
+  getDataFilter,
+  searchData,
+  getDataRecipeCount,
 } = require('../model/ModelRecipe');
 
 const cloudinary = require('../config/photo');
@@ -47,7 +50,7 @@ const RecipeController = {
   },
 
   getData: async (req, res, next) => {
-    let dataRecipe = await getRecipeAll(); //ambil data dari controller
+    let dataRecipe = await getRecipe(); //ambil data dari controller
     console.log('Data Recipe: ');
     console.log(dataRecipe);
     if (dataRecipe) {
@@ -85,39 +88,61 @@ const RecipeController = {
   },
 
   getUsersRecipe: async (req, res, next) => {
-    const { users_id } = req.params;
     try {
-      if (!users_id) {
-        return res.status(404).json({ status: 404, message: 'ID NOT FOUND!' });
-      }
-      let dataRecipeUsers = await GetRecipeByUsesr(users_id);
-      console.log('data: ');
-      console.log(dataRecipeUsers);
+      const { sort, sortBy, page, limit } = req.query;
+      const { id } = req.payload;
+      let pagination = page || 1;
+      let limiter = limit || 5;
 
-      if (!dataRecipeUsers.rows[0]) {
-        return res
-          .status(404)
-          .json({ status: 404, message: 'DATA RECIPE NOT FOUND!' });
+      let data = {
+        offset: (pagination - 1) * limiter,
+        limit: limit || 5,
+        sort: sort || 'ASC',
+        sortBy: sortBy || 'title',
+        id: id,
+      };
+      console.log('payload', req.payload);
+
+      let filter = await GetRecipeByUsers(data);
+      if (filter) {
+        res.status(200).json({
+          status: 200,
+          message: 'Get Recipe By Users Success!',
+          data: filter.rows,
+        });
       }
-      return res.status(200).json({
-        status: 200,
-        message: 'GET DATA RECIPE SUCCESS!',
-        data: dataRecipeUsers.rows,
-      });
+      // if (!users_id) {
+      //   return res.status(404).json({ status: 404, message: 'ID NOT FOUND!' });
+      // }
+      // let dataRecipeUsers = await GetRecipeByUsers(users_id);
+      // console.log('data: ');
+      // console.log(dataRecipeUsers);
+
+      // if (!dataRecipeUsers.rows[0]) {
+      //   return res
+      //     .status(404)
+      //     .json({ status: 404, message: 'DATA RECIPE NOT FOUND!' });
+      // }
+      // return res.status(200).json({
+      //   status: 200,
+      //   message: 'GET DATA RECIPE SUCCESS!',
+      //   data: dataRecipeUsers.rows,
+      // });
     } catch (error) {
       return res.status(404).json({ message: error.message });
     }
   },
+
   postData: async (req, res, next) => {
-    // try {
-      const { title, ingridients, category_id, photo } = req.body; //inisialisasi data
+    try {
+      const { title, ingredients, category_id, image } = req.body; //inisialisasi data
       console.log('post file');
       console.log(req.file);
       console.log('pos data'); //tampilkan data
-      console.log(title, ingridients, category_id, photo); //tampilkan data
+      console.log(title, ingredients, category_id, image); //tampilkan data
 
-      if(!req.isFileValid){
-        return res.status(404).json({message: req.isFileValidMessage})
+      if (!req.isFileValid) {
+        return res.status(404).json({ message: req.isFileValidMessage });
       }
 
       const ImageCloud = await cloudinary.uploader.upload(req.file.path, {
@@ -132,40 +157,43 @@ const RecipeController = {
       console.log('payload');
       console.log(req.payload);
 
-      if (!title || !ingridients || !category_id) {
+      if (!title || !ingredients || !category_id) {
         return res
           .status(404)
-          .json({ message: 'input title, ingridients, category required !' });
+          .json({ message: 'input title, ingredients, category required !' });
       } //validation
       let data = {
         title: title,
-        ingridients: ingridients,
+        ingredients: ingredients,
         category_id: parseInt(category_id),
         users_id,
-        photo: ImageCloud.secure_url,
+        image: ImageCloud.secure_url,
       }; //untuk memasukkan ke database
       console.log('data: ');
       console.log(data);
       let result = postRecipe(data); //result dipanggil dari model
       console.log(result);
 
-      return res.status(200).json({ message: 'post data success', data }); //tampilkan status berhasil jika data masuk
-    // } catch (err) {
-    //   console.error(err.message);
-    // }
+      return res.status(200).json({ message: 'Add Recipe Success', data }); //tampilkan status berhasil jika data masuk
+    } catch (err) {
+      console.error(err.message);
+    }
   },
 
   putData: async (req, res, next) => {
     const { id } = req.params;
-    const { title, ingridients, category_id } = req.body;
+    const { title, ingredients, category_id } = req.body;
 
     if (!id || id <= 0 || isNaN(id)) {
       return res.status(404).json({ message: 'id wrong!' });
     }
 
     let dataRecipeId = await getRecipeById(parseInt(id));
+    if (!dataRecipeId || !dataRecipeId.rows || dataRecipeId.rows.length === 0) {
+      return res.status(404).json({ status: 404, message: 'Recipe not found' });
+    }
     let users_id = req.payload.id;
-
+    // console.log(users_id);
     //photo cheker
     if (!req.file) {
       if (users_id !== dataRecipeId.rows[0].users_id) {
@@ -179,9 +207,9 @@ const RecipeController = {
 
       let data = {
         title: title || dataRecipeId.rows[0].title,
-        ingridients: ingridients || dataRecipeId.rows[0].ingridients,
+        ingredients: ingredients || dataRecipeId.rows[0].ingredients,
         category_id: category_id || dataRecipeId.rows[0].category_id,
-        photo: dataRecipeId.rows[0].photo,
+        image: dataRecipeId.rows[0].image,
       };
 
       let result = putRecipe(data, id);
@@ -190,8 +218,8 @@ const RecipeController = {
         .status(200)
         .json({ status: 200, message: 'update data recipe success!', data });
     } else {
-      if(!req.isFileValid){
-        return res.status(404).json({message: req.isFileValidMessage})
+      if (!req.isFileValid) {
+        return res.status(404).json({ message: req.isFileValidMessage });
       }
       const ImageCloud = await cloudinary.uploader.upload(req.file.path, {
         folder: 'recipe',
@@ -212,9 +240,9 @@ const RecipeController = {
 
       let data = {
         title: title || dataRecipeId.rows[0].title,
-        ingridients: ingridients || dataRecipeId.rows[0].ingridients,
+        ingredients: ingredients || dataRecipeId.rows[0].ingredients,
         category_id: category_id || dataRecipeId.rows[0].category_id,
-        photo: ImageCloud.secure_url
+        image: ImageCloud.secure_url,
       };
 
       let result = putRecipe(data, id);
@@ -231,6 +259,7 @@ const RecipeController = {
       if (!id || id <= 0 || isNaN(id)) {
         return res.status(404).json({ message: 'id wrong' });
       }
+
       let dataRecipeId = await getRecipeById(parseInt(id));
       let users_id = req.payload.id;
       if (users_id !== dataRecipeId.rows[0].users_id) {
@@ -239,7 +268,7 @@ const RecipeController = {
           .json({ status: 404, message: 'THIS RICIPE IS NOT YOURS' });
       }
 
-      let result = await deleteRecipe(parseInt(id));
+      let result = await deleteRecipeById(parseInt(id));
       console.log(result);
       if (result.rowCount == 0) {
         throw new Error('delete data failed');
@@ -251,6 +280,48 @@ const RecipeController = {
       });
     } catch (err) {
       return res.status(404).json({ status: 404, message: err.message });
+    }
+  },
+  getSearchData: async (req, res, next) => {
+    try {
+      const { search, searchBy, limit, sortBy } = req.query;
+
+      let page = req.query.page || 1;
+      let limiter = limit || 5;
+
+      data = {
+        search: search || '',
+        searchBy: searchBy || 'title',
+        offset: (page - 1) * limiter,
+        limit: limit || 5,
+        sortBy: sortBy || 'ASC',
+      };
+      console.log(data);
+
+      let searchData = await getDataSearch(data);
+      let recipeCount = await getDataRecipeCount(data);
+      console.log(searchData);
+      console.log(recipeCount);
+      let pagination = {
+        totalPage: Math.ceil(recipeCount.rows[0].count / limiter),
+        totalData: parseInt(recipeCount.rows[0].count),
+        pageNow: parseInt(page),
+      };
+
+      if (searchData) {
+        res.status(200).json({
+          status: 200,
+          message: 'Search success',
+          data: searchData.rows,
+          pagination,
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.status(404).json({
+        status: 404,
+        message: error.message
+      })
     }
   },
 };
