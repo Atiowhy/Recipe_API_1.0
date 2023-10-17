@@ -1,6 +1,5 @@
 const {
   getRecipe,
-  getRecipeCount,
   getRecipeById,
   postRecipe,
   putRecipe,
@@ -28,7 +27,7 @@ const RecipeController = {
         limit: limit || 5,
       };
       let dataRecipe = await getRecipe(data);
-      let dataRecipeCount = await getRecipeCount(data);
+      let dataRecipeCount = await getDataRecipeCount(data);
 
       let pagination = {
         totalPage: Math.ceil(dataRecipeCount.rows[0].count / limiter),
