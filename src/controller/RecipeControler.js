@@ -14,6 +14,48 @@ const {
 
 const cloudinary = require('../config/photo');
 const RecipeController = {
+  // getRecipes: async (req, res) => {
+  //   try {
+  //     const page = Number(req.query.page) || 1;
+  //     const limit = Number(req.query.limit) || 2;
+  //     const offset = (page - 1) * limit;
+  //     const sortBY = req.query.sortBY || 'id';
+  //     const searchBY = req.query.searchBY || 'title';
+  //     const sort = req.query.sort || '';
+  //     const searchParam = req.query.search ? req.query.search : '';
+  //     const result = await recipeModel.searchData(
+  //       limit,
+  //       offset,
+  //       searchParam,
+  //       sortBY,
+  //       sort,
+  //       searchBY
+  //     );
+
+  //     const dataRecipeCount = await recipeModel.coutData();
+
+  //     const pagination = {
+  //       totalPage: Math.ceil(dataRecipeCount.rows[0].count / limit),
+  //       totalData: parseInt(dataRecipeCount.rows[0].count),
+  //       pageNow: parseInt(page),
+  //     };
+
+  //     if (result.rows.length === 0) {
+  //       return res
+  //         .status(404)
+  //         .json({ message: 'Result not found', pagination });
+  //     }
+
+  //     res.status(200).json({
+  //       message: 'Get recipes sucessfully',
+  //       data: result.rows,
+  //       pagination,
+  //     });
+  //   } catch (error) {
+  //     res.status(500).json({ message: 'Get recipes pagination failed', error });
+  //   }
+  // },
+
   getDataDetail: async (req, res, next) => {
     const { search, searchBy, limit } = req.query;
 
@@ -320,8 +362,8 @@ const RecipeController = {
       console.log(error.message);
       res.status(404).json({
         status: 404,
-        message: error.message
-      })
+        message: error.message,
+      });
     }
   },
 };
