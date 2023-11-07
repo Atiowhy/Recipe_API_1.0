@@ -18,11 +18,11 @@ const getRecipe = async () => {
   });
 };
 
-const GetRecipeByUsers = async (data) => {
-  const { sort, offset, limit, sortby, id } = data;
+const GetRecipeByUsers = async (id) => {
+  // const { sort, offset, limit, sortby, id } = data;
   return new Promise((resolve, reject) => {
     Pool.query(
-      `SELECT recipe.id, recipe.title, recipe.ingredients, recipe.image, category.name AS category, users.name AS author FROM recipe JOIN category ON recipe.category_id = category.id JOIN users ON recipe.users_id = users.id WHERE users_id=${id} ORDER BY ${sortby} ${sort} OFFSET ${offset} LIMIT ${limit}`,
+      `SELECT recipe.id, recipe.title, recipe.ingredients, recipe.image, category.name AS category, users.name AS author FROM recipe JOIN category ON recipe.category_id = category.id JOIN users ON recipe.users_id = users.id WHERE users_id=${id} `,
       (err, result) => {
         if (!err) {
           resolve(result);
@@ -136,7 +136,7 @@ const getDataSearch = async (data) => {
 };
 
 const getDataRecipeCount = async (data) => {
-  const { search, searchBy,} = data;
+  const { search, searchBy } = data;
   console.log(search, searchBy);
 
   return new Promise((resolve, reject) => {

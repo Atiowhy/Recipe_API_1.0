@@ -114,45 +114,25 @@ const RecipeController = {
 
   getUsersRecipe: async (req, res, next) => {
     try {
-      const { sort, sortBy, page, limit } = req.query;
-      const { id } = req.payload;
-      let pagination = page || 1;
-      let limiter = limit || 5;
-
-      let data = {
-        offset: (pagination - 1) * limiter,
-        limit: limit || 5,
-        sort: sort || 'ASC',
-        sortBy: sortBy || 'title',
-        id: id,
-      };
-      console.log('payload', req.payload);
-
-      let filter = await GetRecipeByUsers(data);
-      if (filter) {
-        res.status(200).json({
+      const { id } = req.params;
+      if (isNaN(id) || id < 0 || !id) {
+        return res.status(404).json({ message: 'wrong input id' });
+      }
+      let dataRecipeUsers = await this.GetRecipeByUsers(parseInt(id));
+      if (!dataRecipeUsers.rows[0]) {
+        return res.status(400).json({
           status: 200,
-          message: 'Get Recipe By Users Success!',
-          data: filter.rows,
+          message: 'Get data recipe users not found!',
+          data: [],
         });
       }
-      // if (!users_id) {
-      //   return res.status(404).json({ status: 404, message: 'ID NOT FOUND!' });
-      // }
-      // let dataRecipeUsers = await GetRecipeByUsers(users_id);
-      // console.log('data: ');
-      // console.log(dataRecipeUsers);
-
-      // if (!dataRecipeUsers.rows[0]) {
-      //   return res
-      //     .status(404)
-      //     .json({ status: 404, message: 'DATA RECIPE NOT FOUND!' });
-      // }
-      // return res.status(200).json({
-      //   status: 200,
-      //   message: 'GET DATA RECIPE SUCCESS!',
-      //   data: dataRecipeUsers.rows,
-      // });
+      if (dataRecipeUsers) {
+        res.status(200).json({
+          status: 200,
+          message: 'Get Recipe Users Success!',
+          data: dataRecipeUsers.rows,
+        });
+      }
     } catch (error) {
       return res.status(404).json({ message: error.message });
     }
