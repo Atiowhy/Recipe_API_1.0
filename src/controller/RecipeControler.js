@@ -118,7 +118,7 @@ const RecipeController = {
       if (isNaN(id) || id < 0 || !id) {
         return res.status(404).json({ message: 'wrong input id' });
       }
-      let dataRecipeUsers = await this.GetRecipeByUsers(parseInt(id));
+      let dataRecipeUsers = await GetRecipeByUsers(parseInt(id));
       if (!dataRecipeUsers.rows[0]) {
         return res.status(400).json({
           status: 200,
